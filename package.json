@@ -1,0 +1,24 @@
+{
+  "name": "loopquest-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for LoopQuest — let any AI agent request human-in-the-loop review.",
+  "type": "module",
+  "bin": { "loopquest-mcp": "dist/index.js" },
+  "main": "dist/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "node --experimental-strip-types --test 'src/*.test.ts'",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["mcp", "model-context-protocol", "loopquest", "human-in-the-loop", "review", "ai"],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  },
+  "license": "MIT"
+}
