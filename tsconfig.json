@@ -10,5 +10,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src/index.ts"]
+  "include": [
+    "src/index.ts",
+    "src/body.ts"
+  ]
 }

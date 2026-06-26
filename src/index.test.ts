@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildTaskBody } from "./index.ts";
+import { buildTaskBody } from "./body.ts";
 
 test("buildTaskBody wraps content and passes correlation fields", () => {
   const body = buildTaskBody({

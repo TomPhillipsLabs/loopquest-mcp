@@ -1,35 +1,11 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { fileURLToPath } from "node:url";
 import { z } from "zod";
+import { buildTaskBody } from "./body.js";
 
 const BASE_URL = (process.env.LOOPQUEST_BASE_URL || "https://loopquest.tomphillips.uk").replace(/\/+$/, "");
 const API_KEY = process.env.LOOPQUEST_API_KEY ?? "";
-
-export interface CreateTaskArgs {
-  content: string;
-  title?: string;
-  module?: "swiper" | "detective" | "decoy" | "arena";
-  source?: string;
-  external_id?: string;
-  callback_url?: string;
-  reviews_required?: number;
-}
-
-/** Build the POST /api/v1/tasks body from tool args. Pure — unit tested. */
-export function buildTaskBody(args: CreateTaskArgs): Record<string, unknown> {
-  const body: Record<string, unknown> = {
-    module: args.module ?? "swiper",
-    payload: { content: args.content },
-    card: { title: args.title || "Review", body: args.content },
-  };
-  if (args.source) body.source = args.source;
-  if (args.external_id) body.external_id = args.external_id;
-  if (args.callback_url) body.callback_url = args.callback_url;
-  if (args.reviews_required) body.reviews_required = args.reviews_required;
-  return body;
-}
 
 async function api(path: string, init?: RequestInit) {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -40,7 +16,7 @@ async function api(path: string, init?: RequestInit) {
   return { ok: res.ok, status: res.status, body: text };
 }
 
-const server = new McpServer({ name: "loopquest", version: "0.1.0" });
+const server = new McpServer({ name: "loopquest", version: "0.1.1" });
 
 server.tool(
   "create_review_task",
@@ -74,10 +50,7 @@ async function main() {
   await server.connect(new StdioServerTransport());
 }
 
-// Only start the stdio server when run directly (not when imported by tests).
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main().catch((err) => {
-    console.error("loopquest-mcp failed:", err);
-    process.exit(1);
-  });
-}
+main().catch((err) => {
+  console.error("loopquest-mcp failed:", err);
+  process.exit(1);
+});
